@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Página de Abertura</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #213344;
+            color: #ffd700;
+            margin: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+        }
+        #login-container {
+            background-color: #333;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+        
+        #login-form {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            width: 100%;
+        }
+
+        #forgot-password, #forgot-password1 {
+            text-align: left;
+            margin-top: 10px;
+        }
+        
+        #forgot-password a, #forgot-password1 a {
+            color: blue; /* Cor original */
+            text-decoration: underline;
+            cursor: pointer;
+        }
+
+        #forgot-password a:hover, #forgot-password1 a:hover {
+            color: red; /* Cor ao passar o cursor */
+        }
+    </style>
+</head>
+<body>
+    <div id="login-container">
+        <h2>Login</h2>
+        <form id="login-form">
+            <label for="email">Email:</label>
+            <input type="email" id="email" required>
+            
+            <label for="password">Senha:</label>
+            <input type="password" id="password" required>
+
+            <button type="button" onclick="login()">Entrar</button>
+        </form>
+        <div id="forgot-password1">
+            <a href="file:///C:/Users/mathe/Downloads/aplicativo/public/Projeto1/Projeto1.html">Cadastra-se</a>
+        </div>
+        <div id="forgot-password">
+            <a href="#">Esqueceu sua senha?</a>
+        </div>
+    </div>
+
+    <script>
+        function login() {
+            var email = document.getElementById("email").value;
+            var password = document.getElementById("password").value;
+    
+            // Enviar dados de login para o servidor
+            fetch('/login', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({ email, password }),
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    alert("Login bem-sucedido! Redirecionando para a página principal.");
+                    // Redirecionar para a página principal ou realizar outras ações após o login
+                    window.location.href = "/Projeto1";
+                } else {
+                    alert("Login falhou. Verifique suas credenciais.");
+                }
+            })
+            .catch(error => console.error('Erro:', error));
+        }
+    </script>
+</body>
+</html>

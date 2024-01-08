@@ -1,0 +1,243 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Informe Produto e Valor</title>
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            background-color: #213344; /* Cor de fundo prata escuro */
+            color: #ffffff; /* Cor do texto */
+            margin: 0;
+            padding: 0;
+            display: flex;
+            flex-direction: column; /* Alinhar verticalmente */
+            justify-content: center;
+            align-items: center; /* Alinhar centralizado verticalmente */
+            height: 100vh;
+        }
+
+        h2 {
+            color: #ffd700;
+            text-align: center;
+        }
+
+        form {
+            max-width: 400px;
+            margin: 20px;
+            background-color: #333;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(333, 333, 333, 333);
+            box-sizing: border-box;
+            text-align: left; /* Alinhar à direita */
+        }
+
+        label {
+            display: block;
+            margin-bottom: 8px;
+            text-align: right; /* Alinhar à direita */
+            color: #fff;
+        }
+
+        input {
+            width: 100%;
+            padding: 10px;
+            margin-bottom: 16px;
+            border: 1px solid #fff;
+            border-radius: 4px;
+            box-sizing: border-box;
+            background-color: #333;
+            color: #fff;
+        }
+
+        input[type="submit"] {
+            background-color: #ffd700; /* Cor dourada */
+            color: #333;
+            cursor: pointer;
+        }
+
+        table {
+            border-collapse: collapse;
+            width: 100%;
+            margin-top: 20px;
+            background-color: #213344;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            border-radius: 8px;
+            margin-bottom: 20px;
+            text-align: center;
+            overflow: hidden;
+        }
+
+        th, td {
+            padding: 12px;
+            text-align: right; /* Alinhar à direita */
+            border-bottom: 1px solid #ffd700; /* Cor dourada */
+            border-left: 1px solid #ffd700; /* Adiciona borda à esquerda */
+            color: #fff;
+            background-color: #444; /* Cor de fundo para todas as colunas */
+        }
+
+        th {
+            background-color: #555;
+            color: #213344;
+            border-radius: 8px 8px 0 0;
+        }
+
+        tfoot {
+            background-color: #f5f5f5;
+            font-weight: bold;
+            border-radius: 0 0 8px 8px;
+        }
+
+        #tabelaCadastros th, #tabelaCadastros td {
+            border-left: none; /* Remove a borda à esquerda nas células da tabela de cadastros */
+        }
+
+        #tabelaPagamento {
+            margin-top: 20px;
+            box-shadow: 0 0 10px rgba(333, 333, 333, 333);
+        }
+
+        #tabelaPagamento th, #tabelaPagamento td {
+            padding: 12px;
+            text-align: right; /* Alinhar à direita */
+            border-bottom: 1px solid #ffd700; /* Cor dourada */
+            border-left: 1px solid #ffd700; /* Adiciona borda à esquerda */
+            color: #fff;
+            background-color: #444; /* Cor de fundo para todas as colunas */
+        }
+        
+        #tabelaPagamento input {
+            width: 80%;
+            padding: 8px;
+            margin-right: 8px;
+            border: 1px solid #fff;
+            border-radius: 4px;
+            box-sizing: border-box;
+            background-color: #333;
+            color: #fff;
+        }
+    </style>
+</head>
+</html>
+
+<body>
+
+    <h2>Insira suas informações:</h2>
+
+    <form action="#" method="post" id="cadastroForm">
+        <label for="produto">Produto:</label>
+        <input type="text" id="produto" name="produto" required>
+
+        <label for="valor">Valor:</label>
+        <input type="text" id="valor" name="valor" pattern="\d{1,}\,\d{2}" placeholder="Valor R$0,00" required>
+
+        <input type="submit" value="Cadastrar">
+    </form>
+
+    <h2>Produtos Inseridos</h2>
+
+    <table>
+        <thead>
+            <tr>
+                <th>PRODUTO</th>
+                <th>VALOR</th>
+                <th>APAGAR</th> <!-- Coluna extra para botão de exclusão -->
+            </tr>
+        </thead>
+        <tbody id="tabelaCadastros">
+            <!-- Aqui serão exibidos os cadastros -->
+        </tbody>
+        <tfoot>
+            <tr>
+                <td colspan="2">Total</td>
+                <td id="total">R$ 0,00</td>
+            </tr>
+        </tfoot>
+    </table>
+
+    <h2>PAGAMENTO</h2>
+
+    <table id="tabelaPagamento">
+        <thead>
+            <tr>
+                <th>Valor Pago</th>
+                <th>Troco</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td><input type="number" id="valorPago" oninput="calcularTroco()"></td>
+                <td id="troco">R$ 0,00</td>
+            </tr>
+        </tbody>
+    </table>
+    <script>
+        document.getElementById('cadastroForm').addEventListener('submit', function(event) {
+            event.preventDefault();
+
+            // Obter valores do formulário
+            var produto = document.getElementById('produto').value;
+            var valor = parseFloat(document.getElementById('valor').value.replace(',', '.'));
+
+            // Adicionar uma nova linha à tabela de cadastros
+            var tabelaCadastros = document.getElementById('tabelaCadastros');
+            var novaLinha = tabelaCadastros.insertRow();
+            var celulaProduto = novaLinha.insertCell(0);
+            var celulaValor = novaLinha.insertCell(1);
+            var celulaAcoes = novaLinha.insertCell(2);
+
+            celulaProduto.innerHTML = produto;
+            celulaValor.innerHTML = 'R$ ' + valor.toFixed(2);
+            celulaAcoes.innerHTML = '<button onclick="apagarCadastro(this)">Apagar</button>';
+
+            // Limpar o formulário após o envio
+            document.getElementById('cadastroForm').reset();
+
+            // Atualizar o total
+            calcularTotal();
+        });
+
+        function apagarCadastro(botao) {
+            var linha = botao.parentNode.parentNode;
+            linha.parentNode.removeChild(linha);
+
+            // Atualizar o total
+            calcularTotal();
+        }
+
+        function calcularTotal() {
+            var tabela = document.getElementById('tabelaCadastros');
+            var linhas = tabela.getElementsByTagName('tr');
+            var total = 0;
+
+            for (var i = 0; i < linhas.length; i++) {
+                var celulaValor = linhas[i].getElementsByTagName('td')[1];
+                if (celulaValor) {
+                    total += parseFloat(celulaValor.innerHTML.replace('R$ ', '').replace(',', '.'));
+                }
+            }
+
+            document.getElementById('total').innerHTML = 'R$ ' + total.toFixed(2);
+
+            // Atualizar o troco quando o total é alterado
+            calcularTroco();
+        }
+ function calcularTroco() {
+            var valorPago = parseFloat(document.getElementById('valorPago').value) || 0;
+            var total = parseFloat(document.getElementById('total').innerHTML.replace('R$ ', '')) || 0;
+            var troco = valorPago - total;
+
+            document.getElementById('troco').innerHTML = 'R$ ' + troco.toFixed(2);
+        }
+    </script>
+<footer style="text-align: center;margin-top: 20px; color: #fff;">
+    <p>Matheus Ribeiro</p>
+    
+</footer>
+
+
+</body>
+</html>
